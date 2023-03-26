@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using News_App_API.Context;
 
@@ -10,9 +11,11 @@ using News_App_API.Context;
 namespace NewsAppAPI.Migrations
 {
     [DbContext(typeof(NewsAPIContext))]
-    partial class NewsAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20230326140641_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace NewsAppAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("07c4cd06-b6e1-4d07-94a4-dcf8caca7405"),
+                            Id = new Guid("36d3072f-289d-4148-876f-c1a11ba270fc"),
                             Email = "test@gmail.com",
                             Password = "root",
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
