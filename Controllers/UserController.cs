@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using News_App_API.Handlers;
+using News_App_API.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -7,35 +12,35 @@ namespace News_App_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
-    {
+    { 
         // GET: api/<UserController>
-        [HttpGet]
+        [HttpGet, Authorize]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
         // GET api/<UserController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public string Get(int id)
         {
             return "value";
         }
 
         // POST api/<UserController>
-        [HttpPost]
+        [HttpPost, Authorize]
         public void Post([FromBody] string value)
         {
         }
 
         // PUT api/<UserController>/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public void Put(int id, [FromBody] string value)
         {
         }
 
         // DELETE api/<UserController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public void Delete(int id)
         {
         }

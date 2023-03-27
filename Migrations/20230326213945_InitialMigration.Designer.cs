@@ -11,8 +11,8 @@ using News_App_API.Context;
 namespace NewsAppAPI.Migrations
 {
     [DbContext(typeof(NewsAPIContext))]
-    [Migration("20230118210308_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230326213945_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,11 +22,11 @@ namespace NewsAppAPI.Migrations
                 .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("News_App_API.Models.Article", b =>
+            modelBuilder.Entity("News_App_API.Models.ArticleDto", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Author")
                         .HasColumnType("longtext");
@@ -40,9 +40,9 @@ namespace NewsAppAPI.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("UserId")
+                    b.Property<Guid?>("UserId")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -51,22 +51,22 @@ namespace NewsAppAPI.Migrations
                     b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.Comment", b =>
+            modelBuilder.Entity("News_App_API.Models.CommentDto", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    b.Property<int?>("ArticleId")
+                    b.Property<Guid?>("ArticleId")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Content")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("UserId")
+                    b.Property<Guid?>("UserId")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -77,17 +77,19 @@ namespace NewsAppAPI.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.Rating", b =>
+            modelBuilder.Entity("News_App_API.Models.RatingDto", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("ArticleId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ArticleId")
+                        .IsRequired()
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Value")
                         .HasColumnType("int");
@@ -101,16 +103,53 @@ namespace NewsAppAPI.Migrations
                     b.ToTable("Ratings");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.User", b =>
+            modelBuilder.Entity("News_App_API.Models.UserAuthDto", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsersAuth");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("07c4cd06-b6e1-4d07-94a4-dcf8caca7405"),
+                            Email = "test@gmail.com",
+                            Password = "root",
+                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("News_App_API.Models.UserDto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserTag")
@@ -121,9 +160,9 @@ namespace NewsAppAPI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.Article", b =>
+            modelBuilder.Entity("News_App_API.Models.ArticleDto", b =>
                 {
-                    b.HasOne("News_App_API.Models.User", "User")
+                    b.HasOne("News_App_API.Models.UserDto", "User")
                         .WithMany("Articles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -132,15 +171,15 @@ namespace NewsAppAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.Comment", b =>
+            modelBuilder.Entity("News_App_API.Models.CommentDto", b =>
                 {
-                    b.HasOne("News_App_API.Models.Article", "Article")
+                    b.HasOne("News_App_API.Models.ArticleDto", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("News_App_API.Models.User", "User")
+                    b.HasOne("News_App_API.Models.UserDto", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -151,15 +190,15 @@ namespace NewsAppAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.Rating", b =>
+            modelBuilder.Entity("News_App_API.Models.RatingDto", b =>
                 {
-                    b.HasOne("News_App_API.Models.Article", "Article")
+                    b.HasOne("News_App_API.Models.ArticleDto", "Article")
                         .WithMany("Ratings")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("News_App_API.Models.User", "User")
+                    b.HasOne("News_App_API.Models.UserDto", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -170,14 +209,14 @@ namespace NewsAppAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.Article", b =>
+            modelBuilder.Entity("News_App_API.Models.ArticleDto", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("Ratings");
                 });
 
-            modelBuilder.Entity("News_App_API.Models.User", b =>
+            modelBuilder.Entity("News_App_API.Models.UserDto", b =>
                 {
                     b.Navigation("Articles");
 

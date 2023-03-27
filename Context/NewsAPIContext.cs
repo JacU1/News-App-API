@@ -20,9 +20,31 @@ public class NewsAPIContext : DbContext
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
     }
 
-    public DbSet<Article> Articles { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Rating> Ratings { get; set; } = null!;
-    public DbSet<Comment> Comments { get; set; } = null!;
+    public DbSet<ArticleDto> Articles { get; set; } = null!;
+    public DbSet<UserDto> Users { get; set; } = null!;
+    public DbSet<RatingDto> Ratings { get; set; } = null!;
+    public DbSet<CommentDto> Comments { get; set; } = null!;
+    public DbSet<UserAuthDto> UsersAuth { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        var rootUserGuid = Guid.NewGuid();
+
+        modelBuilder.Entity<UserAuthDto>().HasData(new UserAuthDto
+        {
+            Id = rootUserGuid,
+            Email = "test@gmail.com",
+            Password = "root"
+        });
+
+        //modelBuilder.Entity<UserDto>().HasData(new UserDto
+        //{
+        //    Id = rootUserGuid,
+
+        //});
+    }
 }
+
 //dotnet ef database update
