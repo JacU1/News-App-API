@@ -1,14 +1,23 @@
 {
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:65525",
+      "sslPort": 44363
+    }
+  },
   "profiles": {
     "News_App_API": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:9002",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:9002"
+      "dotnetRunMessages": true
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -22,18 +31,10 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-      "publishAllPorts": true,
+      "environmentVariables": {},
+      "httpPort": 9002,
       "useSSL": false,
-      "httpPort": 9002
-    }
-  },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:65525",
-      "sslPort": 44363
+      "publishAllPorts": true
     }
   }
 }
