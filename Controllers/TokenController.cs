@@ -49,7 +49,8 @@ namespace News_App_API.Controllers
             return Ok(new AuthResponseDto()
             {
                 Token = newAccessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
+                IsAuthSuccessful = true
             });
         }
         [HttpPost, Authorize]
