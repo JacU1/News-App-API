@@ -5,17 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
+using News_App_API.Interfaces;
 using News_App_API.Models;
 using News_App_API.Services;
 
 namespace News_App_API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TokenController : Controller
     {
         private readonly NewsAPIContext _appContext;
-        private readonly TokenService _tokenService;
+        private readonly ITokenInterface _tokenService;
 
-        public TokenController(NewsAPIContext appContext, TokenService tokenService)
+        public TokenController(NewsAPIContext appContext, ITokenInterface tokenService)
         {
             this._appContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
             this._tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
