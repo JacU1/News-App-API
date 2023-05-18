@@ -40,13 +40,18 @@ namespace News_App_API.Controllers
 
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, loginModel.Email),
+                /*new Claim(ClaimTypes.)*/
                 //new Claim(ClaimTypes.Role, "Manager") TODO dodać role do odpowiedniego miejsca albo do UserAuth albo do User 
             };
 
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = _tokenService.GenerateRefreshToken();
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+
+            TimeZoneInfo polishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, polishTimeZone);
+
+            user.RefreshTokenExpiryTime = localTime.AddMinutes(7);
             _appContext.SaveChanges();
 
             return Ok(new AuthResponseDto
