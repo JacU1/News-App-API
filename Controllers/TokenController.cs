@@ -24,12 +24,12 @@ namespace News_App_API.Controllers
             this._tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [Route("refresh")]
         public IActionResult Refresh(TokenApiDto tokenApiModel)
         {
             if (tokenApiModel is null) {
-                return BadRequest("Invalid client request");
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
              
             string accessToken = tokenApiModel.AccessToken;
@@ -40,7 +40,7 @@ namespace News_App_API.Controllers
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
             if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now) {
-                return BadRequest("Invalid client request");
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
              
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
@@ -64,7 +64,7 @@ namespace News_App_API.Controllers
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
             if (user == null) {
-                return BadRequest();
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
 
             user.RefreshToken = null;
