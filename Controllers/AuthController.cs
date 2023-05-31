@@ -28,7 +28,7 @@ namespace News_App_API.Controllers
         {
             if (loginModel is null)
             {
-                return BadRequest("Invalid client request");
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
 
             var user = _appContext.UsersAuth.FirstOrDefault(u =>
@@ -40,8 +40,6 @@ namespace News_App_API.Controllers
 
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, loginModel.Email),
-                /*new Claim(ClaimTypes.)*/
-                //new Claim(ClaimTypes.Role, "Manager") TODO dodać role do odpowiedniego miejsca albo do UserAuth albo do User 
             };
 
             var accessToken = _tokenService.GenerateAccessToken(claims);
