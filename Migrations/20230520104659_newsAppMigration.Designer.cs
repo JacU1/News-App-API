@@ -11,8 +11,8 @@ using News_App_API.Context;
 namespace NewsAppAPI.Migrations
 {
     [DbContext(typeof(NewsAPIContext))]
-    [Migration("20230326213945_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230520104659_newsAppMigration")]
+    partial class newsAppMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,7 +130,7 @@ namespace NewsAppAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("07c4cd06-b6e1-4d07-94a4-dcf8caca7405"),
+                            Id = new Guid("62d65d24-32b2-4a43-beb6-d7945736fc8c"),
                             Email = "test@gmail.com",
                             Password = "root",
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -158,6 +158,16 @@ namespace NewsAppAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("62d65d24-32b2-4a43-beb6-d7945736fc8c"),
+                            Email = "test@gmail.com",
+                            LastName = "AdminLastName",
+                            Name = "AdminName",
+                            UserTag = "AdminTag"
+                        });
                 });
 
             modelBuilder.Entity("News_App_API.Models.ArticleDto", b =>

@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
 using News_App_API.Context;
 using News_App_API.Handlers;
 using News_App_API.Services;
 using News_App_API.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using News_App_API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");  
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,8 +52,8 @@ builder.Services.AddAuthentication(opt =>
             .GetBytes(jwtSettings.GetSection("securityKey").Value))
     };
 });
-
 builder.Services.AddTransient<ITokenInterface, TokenService>();
+//builder.Services.AddIdentity<UserDto, IdentityUser>();
 
 var app = builder.Build();
 

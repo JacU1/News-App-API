@@ -34,20 +34,6 @@ namespace News_App_API.Handlers
             };
             return claims;
         }
-
-        public JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
-        {
-            TimeZoneInfo polishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
-            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, polishTimeZone);
-
-            var tokenOptions = new JwtSecurityToken(
-                issuer: _jwtSettings["validIssuer"],
-                audience: _jwtSettings["validAudience"],
-                claims: claims,
-                expires: localTime.AddMinutes(1),
-                signingCredentials: signingCredentials);
-            return tokenOptions;
-        }
     }
 }
 

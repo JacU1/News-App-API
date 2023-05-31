@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NewsAppAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class newsAppMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -136,9 +136,14 @@ namespace NewsAppAPI.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "LastName", "Name", "UserTag" },
+                values: new object[] { new Guid("62d65d24-32b2-4a43-beb6-d7945736fc8c"), "test@gmail.com", "AdminLastName", "AdminName", "AdminTag" });
+
+            migrationBuilder.InsertData(
                 table: "UsersAuth",
                 columns: new[] { "Id", "Email", "Password", "RefreshToken", "RefreshTokenExpiryTime" },
-                values: new object[] { new Guid("07c4cd06-b6e1-4d07-94a4-dcf8caca7405"), "test@gmail.com", "root", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                values: new object[] { new Guid("62d65d24-32b2-4a43-beb6-d7945736fc8c"), "test@gmail.com", "root", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_UserId",
