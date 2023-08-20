@@ -24,7 +24,7 @@ namespace News_App_API.Controllers
             this._tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
         [Route("refresh")]
         public IActionResult Refresh(TokenApiDto tokenApiModel)
         {
@@ -56,7 +56,7 @@ namespace News_App_API.Controllers
                 IsAuthSuccessful = true
             });
         }
-        [HttpPost, Authorize]
+        [HttpPost]
         [Route("revoke")]
         public IActionResult Revoke()
         {

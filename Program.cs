@@ -8,6 +8,7 @@ using News_App_API.Services;
 using News_App_API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using News_App_API.Models;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +53,9 @@ builder.Services.AddAuthentication(opt =>
             .GetBytes(jwtSettings.GetSection("securityKey").Value))
     };
 });
+
 builder.Services.AddTransient<ITokenInterface, TokenService>();
+builder.Services.AddAutoMapper(typeof(Program));
 //builder.Services.AddIdentity<UserDto, IdentityUser>();
 
 var app = builder.Build();
@@ -67,6 +70,12 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-app.UseCors("EnableCORS");
+
+app.UseCors(x => x
+           .AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader());
+
+app.UseHttpsRedirection();
 
 app.Run();
