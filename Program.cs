@@ -6,8 +6,6 @@ using News_App_API.Context;
 using News_App_API.Handlers;
 using News_App_API.Services;
 using News_App_API.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using News_App_API.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
