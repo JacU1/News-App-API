@@ -9,12 +9,14 @@ using News_App_API.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using News_App_API.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,11 +30,26 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("EnableCORS", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins(new string[] { "http://localhost:4200", "https://localhost:4200" })
+        .AllowCredentials()
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
 });
+
+  builder.Services.AddControllersWithViews();
+
+  builder.Services.AddAntiforgery(options =>
+        {
+            options.HeaderName = "X-Xsrf-Token";
+            options.SuppressXFrameOptionsHeader = true;
+        });
+
+    builder.Services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.CheckConsentNeeded = context => false;
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");  
 builder.Services.AddAuthentication(opt =>
@@ -59,8 +76,6 @@ builder.Services.AddAutoMapper(typeof(Program));
 //builder.Services.AddIdentity<UserDto, IdentityUser>();
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -70,12 +85,5 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-
-app.UseCors(x => x
-           .AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader());
-
-app.UseHttpsRedirection();
-
+app.UseCors("EnableCORS");
 app.Run();

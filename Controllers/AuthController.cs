@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
 using News_App_API.Interfaces;
@@ -13,17 +14,22 @@ namespace News_App_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly NewsAPIContext _appContext;
         private readonly ITokenInterface _tokenService;
+        private readonly IAntiforgery _antiforgery;
 
-        public AuthController(NewsAPIContext appContext, ITokenInterface tokenService) {
+        public AuthController(
+            NewsAPIContext appContext, 
+            ITokenInterface tokenService) 
+        {
             _appContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         }
 
         [HttpPost, Route("login")]
+        [AutoValidateAntiforgeryToken]
         public IActionResult Login([FromBody] UserAuthDto loginModel)
         {
             if (loginModel is null)
