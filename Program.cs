@@ -6,10 +6,7 @@ using News_App_API.Context;
 using News_App_API.Handlers;
 using News_App_API.Services;
 using News_App_API.Interfaces;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,19 +32,20 @@ builder.Services.AddCors(options =>
     });
 });
 
-  builder.Services.AddControllersWithViews();
+    builder.Services.AddAntiforgery(options => {
+        options.HeaderName = "X-XSRF-TOKEN";
+        options.Cookie.Name = "CSRF-COOKIE";
+        options.Cookie.HttpOnly = false;
+        options.Cookie.Domain = "http://localhost:4200";
+        options.Cookie.IsEssential = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // postawiæ na HTTPS FE i BE i posprawdzaæ tutaj security
+        options.Cookie.Path = "/";
+    });
 
-  builder.Services.AddAntiforgery(options =>
-        {
-            options.HeaderName = "X-Xsrf-Token";
-            options.SuppressXFrameOptionsHeader = true;
-        });
-
-    builder.Services.Configure<CookiePolicyOptions>(options =>
-        {
-            options.CheckConsentNeeded = context => false;
-            options.MinimumSameSitePolicy = SameSiteMode.None;
-        });
+    builder.Services.AddControllersWithViews(options =>
+        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())
+    );
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");  
 builder.Services.AddAuthentication(opt =>
@@ -71,7 +69,6 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddTransient<ITokenInterface, TokenService>();
 builder.Services.AddAutoMapper(typeof(Program));
-//builder.Services.AddIdentity<UserDto, IdentityUser>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -80,6 +77,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCookiePolicy();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();

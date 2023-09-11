@@ -8,7 +8,6 @@ namespace News_App_API.Controllers
     [ApiController]
     public class PingController : ControllerBase
     {
-
         private readonly IAntiforgery? _antiforgery;
 
         public PingController(IAntiforgery? antiforgery)
@@ -16,17 +15,22 @@ namespace News_App_API.Controllers
             _antiforgery = antiforgery;
         }
 
+        [Route("antiforgerytoken")]
+        [IgnoreAntiforgeryToken]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GenerateAntiForgeryTokens()
         {
-            var aft = _antiforgery!.GetAndStoreTokens(HttpContext);
-            Response.Cookies.Append("XSRF-TOKEN", aft.RequestToken!, new CookieOptions
-            {
-                HttpOnly = false,
-                Secure = false,
-            });
+            var tokens = _antiforgery!.GetAndStoreTokens(HttpContext);
+            Response.Cookies.Append("CSRF-COOKIE", tokens.RequestToken!);
+            return NoContent();
+        }
 
-            return Ok(true);
+        [Route("Startupcall")]
+        [IgnoreAntiforgeryToken]
+        [HttpPost]
+        public IActionResult Startupcall()
+        {
+            return NoContent();
         }
     }
 }
