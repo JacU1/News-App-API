@@ -12,6 +12,7 @@ using News_App_API.Services;
 
 namespace News_App_API.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -29,7 +30,6 @@ namespace News_App_API.Controllers
         }
 
         [HttpPost, Route("login")]
-        [AutoValidateAntiforgeryToken]
         public IActionResult Login([FromBody] UserAuthDto loginModel)
         {
             if (loginModel is null)
