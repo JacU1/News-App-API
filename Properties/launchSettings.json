@@ -13,12 +13,26 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:9002",
+      "useSSL": true,
+      "applicationUrl": "http://localhost;https://localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true
     },
+
+    "News_App_API-https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "useSSL": true,
+      "sslPort": 443
+    },
+
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
@@ -34,7 +48,11 @@
       "environmentVariables": {},
       "publishAllPorts": true,
       "httpPort": 9002,
-      "useSSL": false
+      "useSSL": true,
+      "sslPort": 443,
+      "Scheme": "https",
+      "ServiceHost": "localhost",
+      "ServicePort": "443"
     }
   }
 }
