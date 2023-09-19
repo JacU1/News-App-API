@@ -30,6 +30,7 @@ namespace News_App_API.Controllers
         }
 
         [HttpPost, Route("login")]
+        [IgnoreAntiforgeryToken]
         public IActionResult Login([FromBody] UserAuthDto loginModel)
         {
             if (loginModel is null)
