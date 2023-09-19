@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,13 +38,14 @@ builder.Services.AddCors(options =>
 
     builder.Services.AddAntiforgery(options => {
         options.HeaderName = "X-XSRF-TOKEN";
-        options.Cookie.Name = "CSRF-COOKIE";
+        options.Cookie.Name = "MyAntiforgery";
         options.Cookie.HttpOnly = false;
-        options.Cookie.Domain = "http://localhost:4200";
         options.Cookie.IsEssential = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // postawiæ na HTTPS FE i BE i posprawdzaæ tutaj security
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
         options.Cookie.Path = "/";
+        options.SuppressXFrameOptionsHeader = true;
+        options.FormFieldName = "";
     });
 
     builder.Services.AddControllersWithViews(options =>
