@@ -82,6 +82,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var antiforgery = app.Services.GetRequiredService<IAntiforgery>();
+
+app.Use((context, next) =>
+{
+    var requestPath = context.Request.Path.Value;
+    var tokenSet = antiforgery.GetAndStoreTokens(context);
+    context.Response.Cookies.Append("XSRF-COOKIE", tokenSet.RequestToken!, new CookieOptions
+    {
+        HttpOnly = false,
+        IsEssential = true,
+        SameSite = SameSiteMode.Lax,
+        Secure = true,
+        Path = "/"
+    });
+    return next(context);
+});
+
 app.UseCookiePolicy();
 app.UseAuthorization();
 app.UseAuthentication();

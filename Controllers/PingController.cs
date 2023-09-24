@@ -17,7 +17,6 @@ namespace News_App_API.Controllers
         }
 
         [Route("antiforgerytoken")]
-        [IgnoreAntiforgeryToken]
         [HttpGet]
         public IActionResult GenerateAntiForgeryTokens()
         {
@@ -32,15 +31,6 @@ namespace News_App_API.Controllers
             });
             return NoContent();
         }
-
-       /* options.HeaderName = "X-XSRF-TOKEN";
-        options.Cookie.Name = "XSRF-COOKIE";
-        options.Cookie.HttpOnly = false;
-        options.Cookie.Domain = "http://localhost:4200";
-        options.Cookie.IsEssential = true;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-        options.Cookie.Path = "/";*/
 
         [Route("Startupcall")]
         [IgnoreAntiforgeryToken]
