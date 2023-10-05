@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
-using News_App_API.Handlers;
 using News_App_API.Interfaces;
 using News_App_API.Models;
 using News_App_API.Services;
