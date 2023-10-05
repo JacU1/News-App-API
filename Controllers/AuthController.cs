@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
 using News_App_API.Interfaces;
@@ -11,14 +12,19 @@ using News_App_API.Services;
 
 namespace News_App_API.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly NewsAPIContext _appContext;
         private readonly ITokenInterface _tokenService;
+        private readonly IAntiforgery _antiforgery;
 
-        public AuthController(NewsAPIContext appContext, ITokenInterface tokenService) {
+        public AuthController(
+            NewsAPIContext appContext, 
+            ITokenInterface tokenService) 
+        {
             _appContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         }
@@ -28,7 +34,7 @@ namespace News_App_API.Controllers
         {
             if (loginModel is null)
             {
-                return BadRequest("Invalid client request");
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
 
             var user = _appContext.UsersAuth.FirstOrDefault(u =>
@@ -40,13 +46,16 @@ namespace News_App_API.Controllers
 
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, loginModel.Email),
-                //new Claim(ClaimTypes.Role, "Manager") TODO dodać role do odpowiedniego miejsca albo do UserAuth albo do User 
             };
 
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = _tokenService.GenerateRefreshToken();
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+
+            TimeZoneInfo polishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, polishTimeZone);
+
+            user.RefreshTokenExpiryTime = localTime.AddMinutes(60);
             _appContext.SaveChanges();
 
             return Ok(new AuthResponseDto

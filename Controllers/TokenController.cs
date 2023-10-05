@@ -5,28 +5,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
+using News_App_API.Interfaces;
 using News_App_API.Models;
 using News_App_API.Services;
 
 namespace News_App_API.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Route("api/[controller]")]
+    [ApiController]
     public class TokenController : Controller
     {
         private readonly NewsAPIContext _appContext;
-        private readonly TokenService _tokenService;
+        private readonly ITokenInterface _tokenService;
 
-        public TokenController(NewsAPIContext appContext, TokenService tokenService)
+        public TokenController(NewsAPIContext appContext, ITokenInterface tokenService)
         {
             this._appContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
             this._tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         [Route("refresh")]
         public IActionResult Refresh(TokenApiDto tokenApiModel)
         {
             if (tokenApiModel is null) {
-                return BadRequest("Invalid client request");
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
              
             string accessToken = tokenApiModel.AccessToken;
@@ -37,7 +42,7 @@ namespace News_App_API.Controllers
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
             if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now) {
-                return BadRequest("Invalid client request");
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
              
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
@@ -53,7 +58,8 @@ namespace News_App_API.Controllers
                 IsAuthSuccessful = true
             });
         }
-        [HttpPost, Authorize]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
         [Route("revoke")]
         public IActionResult Revoke()
         {
@@ -61,7 +67,7 @@ namespace News_App_API.Controllers
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
             if (user == null) {
-                return BadRequest();
+                return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
 
             user.RefreshToken = null;

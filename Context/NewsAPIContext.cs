@@ -36,14 +36,17 @@ public class NewsAPIContext : DbContext
         {
             Id = rootUserGuid,
             Email = "test@gmail.com",
-            Password = "root"
+            Password = "root",
         });
 
-        //modelBuilder.Entity<UserDto>().HasData(new UserDto
-        //{
-        //    Id = rootUserGuid,
-
-        //});
+        modelBuilder.Entity<UserDto>().HasData(new UserDto
+        {
+            Id = rootUserGuid,
+            Name = "AdminName",
+            LastName = "AdminLastName",
+            Email = "test@gmail.com",
+            UserTag = "AdminTag"
+        });
     }
 }
 

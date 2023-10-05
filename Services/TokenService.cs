@@ -1,12 +1,9 @@
-﻿using System;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using News_App_API.Interfaces;
-using System.Configuration;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace News_App_API.Services
 {
@@ -25,7 +22,7 @@ namespace News_App_API.Services
             var secretKey = Encoding.UTF8.GetBytes(_jwtSettings.GetSection("securityKey").Value);
             var signinCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256);
 
-            var tokeOptions = new JwtSecurityToken(
+            var tokenOptions = new JwtSecurityToken(
                 issuer: _jwtSettings["validIssuer"],
                 audience: _jwtSettings["validAudience"],
                 claims: claims,
@@ -33,7 +30,7 @@ namespace News_App_API.Services
                 signingCredentials: signinCredentials
             );
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             return tokenString;
         }
         public string GenerateRefreshToken()
