@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
 using News_App_API.Context;
-using News_App_API.Handlers;
 using News_App_API.Services;
 using News_App_API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -22,8 +21,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<NewsAPIContext>();
-
-builder.Services.AddScoped<JwtHandler>();
 
 builder.Services.AddCors(options =>
 {

@@ -19,7 +19,6 @@ namespace News_App_API.Controllers
     {
         private readonly NewsAPIContext _appContext;
         private readonly ITokenInterface _tokenService;
-        private readonly IAntiforgery _antiforgery;
 
         public AuthController(
             NewsAPIContext appContext, 
@@ -45,7 +44,7 @@ namespace News_App_API.Controllers
             }
 
             var claims = new List<Claim> {
-                new Claim(ClaimTypes.Name, loginModel.Email),
+                new Claim(ClaimTypes.Name, loginModel.Email!),
             };
 
             var accessToken = _tokenService.GenerateAccessToken(claims);
