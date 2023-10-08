@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
 using News_App_API.Interfaces;
 using News_App_API.Models;
-using News_App_API.Services;
 
 namespace News_App_API.Controllers
 {
@@ -34,11 +28,11 @@ namespace News_App_API.Controllers
                 return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
              
-            string accessToken = tokenApiModel.AccessToken;
-            string refreshToken = tokenApiModel.RefreshToken;
+            string accessToken = tokenApiModel.AccessToken!;
+            string refreshToken = tokenApiModel.RefreshToken!;
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
-            var userEmail = principal.Identity.Name; //this is mapped to the Name claim by default
+            var userEmail = principal.Identity!.Name;
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
             if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now) {
@@ -63,7 +57,7 @@ namespace News_App_API.Controllers
         [Route("revoke")]
         public IActionResult Revoke()
         {
-            var userEmail = User.Identity.Name;
+            var userEmail = User.Identity!.Name;
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
             if (user == null) {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using News_App_API.Context;
-using News_App_API.Handlers;
-using News_App_API.Interfaces;
 using News_App_API.Models;
-using News_App_API.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,7 +19,7 @@ namespace News_App_API.Controllers
         }
 
         [HttpPost, Route("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
+        public IActionResult RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
             if (userForRegistration == null || !ModelState.IsValid)
                 return BadRequest();
@@ -46,7 +40,7 @@ namespace News_App_API.Controllers
                 Password = userForRegistration.Password
             };
 
-            if(user != null && userAuth != null)
+            if (user != null && userAuth != null)
             {
                 _appContext.Add<UserDto>(user);
                 _appContext.SaveChanges();
