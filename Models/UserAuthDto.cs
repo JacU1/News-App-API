@@ -17,7 +17,6 @@ namespace News_App_API.Models
         [Required(ErrorMessage = "Password is required.")]
         public string? Password { get; set; }
         public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }
 

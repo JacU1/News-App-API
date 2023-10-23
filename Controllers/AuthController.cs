@@ -54,7 +54,6 @@ namespace News_App_API.Controllers
             TimeZoneInfo polishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
             DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, polishTimeZone);
 
-            user.RefreshTokenExpiryTime = localTime.AddMinutes(60);
             _appContext.SaveChanges();
 
             return Ok(new AuthResponseDto

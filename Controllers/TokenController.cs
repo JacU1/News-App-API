@@ -35,7 +35,7 @@ namespace News_App_API.Controllers
             var userEmail = principal.Identity!.Name;
             var user = _appContext.UsersAuth.SingleOrDefault(u => u.Email == userEmail);
 
-            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now) {
+            if (user is null || user.RefreshToken != refreshToken) {
                 return BadRequest(new AuthResponseDto { ErrorMessage = "Invalid client request" });
             }
              
